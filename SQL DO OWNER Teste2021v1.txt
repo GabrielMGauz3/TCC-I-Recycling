@@ -1,0 +1,222 @@
+CONSULTA 
+Select u.nome_usuario, p.telefone from tb_usuarios u
+inner join tb_telefones p
+on u.id_usuario = p.fk_id_usuario;
+
+Select u.nome_usuario, p.telefone, e.cidade, e.estado from tb_usuarios u
+inner join tb_telefones p
+on u.id_usuario = p.fk_id_usuario
+inner join tb_enderecos e
+on u.id_usuario = e.fk_id_usuario;
+
+
+select u.nome_usuario, c.statuscoleta,a.data_coleta, a.periodo,a.itemum,a.quantidadeum,a.itemdois,a.quantidadedois from tb_usuarios u
+inner join tb_agendamentos c
+on u.id_usuario = c.fk_id_usuario
+inner join tb_teste_agenda a
+on c.id_agendamento = a.fk_id_agendamento;
+
+
+select c.statuscoleta,a.data_coleta, a.periodo,a.itemum,a.quantidadeum,a.itemdois,a.quantidadedois from tb_agendamentos c
+inner join tb_teste_agenda a
+on c.id_agendamento = a.fk_id_agendamento;
+
+
+CREATE TABLE tb_usuarios (
+ id_usuario SERIAL PRIMARY KEY,
+ CPF VARCHAR(15),
+ Nome_Usuario varchar(30) NOT NULL, 
+ Sobrenome_Usuario varchar(40) NOT NULL,
+ Sexo char(1) NOT NULL,
+ Email varchar(40),
+ Senha varchar(32),
+ tipo char(1)
+);
+
+CREATE TABLE tb_telefones (
+ ID_Telefone SERIAL PRIMARY KEY,
+ DDD char(2) NOT NULL,
+ CPF VARCHAR(15),
+ Telefone INTEGER  NOT NULL,
+ FK_ID_Usuario SERIAL,
+ FOREIGN KEY (FK_ID_Usuario) REFERENCES tb_usuarios (id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE tb_enderecos (
+  ID_Endereco SERIAL PRIMARY KEY,
+  FK_ID_Usuario SERIAL,
+  Rua VARCHAR (50) NOT NULL,
+  Numero_Casa INTEGER NOT NULL,
+  Bairro VARCHAR(50) NOT NULL,
+  Cidade VARCHAR (50) NOT NULL,
+  Estado CHAR (2)
+);
+
+CREATE TABLE tb_agendamentos (
+  ID_Agendamento SERIAL PRIMARY KEY,
+  FK_ID_Usuario SERIAL,
+  STATUSCOLETA VARCHAR(50),
+  FOREIGN KEY (FK_ID_Usuario) REFERENCES tb_usuarios (id_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+UTILIZAR ESSA A BAIXO
+CREATE TABLE tb_teste_agenda (
+ ID_Agenda SERIAL PRIMARY KEY,
+ data_coleta varchar(50),
+ periodo varchar(15) NOT NULL,
+ ITEMUM VARCHAR(15),
+ QUANTIDADEUM INTEGER  NOT NULL,
+ ITEMDOIS VARCHAR(15),
+ QUANTIDADEDOIS INTEGER  NOT NULL,
+ FK_ID_Usuario SERIAL,
+ FK_ID_Agendamento SERIAL,
+ FOREIGN KEY (FK_ID_Usuario) REFERENCES tb_usuarios (id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+ FOREIGN KEY (FK_ID_Agendamento) REFERENCES tb_agendamentos (ID_Agendamento) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+
+CONSULTAS MANUAIS NO SQL
+
+
+Select u.nome_usuario, p.telefone, e.cidade, e.estado from tb_usuarios u
+inner join tb_telefones p
+on u.id_usuario = p.fk_id_usuario
+inner join tb_enderecos e
+on u.id_usuario = e.fk_id_usuario;
+
+select * from tb_usuarios;
+
+select 
+select u.nome_usuario, c.statuscoleta,a.data_coleta, a.periodo,a.itemum,a.quantidadeum,a.itemdois,a.quantidadedois from tb_usuarios u
+inner join tb_agendamentos c
+on u.id_usuario = c.fk_id_usuario
+inner join tb_teste_agenda a
+on c.id_agendamento = a.fk_id_agendamento;
+
+SELECT tb_usuarios.nome_usuario,tb_usuarios.sobrenome_usuario,
+        tb_usuarios.email,tb_enderecos.cidade,tb_enderecos.rua,tb_enderecos.bairro,
+        tb_enderecos.estado,tb_enderecos.numero_casa FROM tb_usuarios
+        INNER JOIN tb_enderecos
+        ON id_usuario = fk_id_usuario
+        WHERE id_usuario = 3
+		
+UPDATE tb_agendamentos SET statuscoleta = 'Cancelado' WHERE id_agendamento = 10
+            AND fk_id_usuario = 3 AND statuscoleta = 'Em andamento'
+
+select * from tb_agendamentos
+
+SELECT tb_teste_agenda.data_coleta, tb_teste_agenda.periodo,tb_teste_agenda.itemum,tb_teste_agenda.quantidadeum,tb_teste_agenda.itemdois,tb_teste_agenda.quantidadedois,tb_usuarios.nome_usuario,tb_agendamentos.statuscoleta FROM tb_agendamentos
+            inner join tb_teste_agenda
+            on tb_agendamentos.id_agendamento = tb_teste_agenda.fk_id_agendamento
+            inner join tb_usuarios
+            on tb_agendamentos.fk_id_usuario = tb_usuarios.id_usuario
+
+
+SELECT a.data_coleta, a.periodo,a.itemum,a.quantidadeum,a.itemdois,a.quantidadedois,u.nome_usuario,c.statuscoleta FROM tb_agendamentos c
+            inner join tb_teste_agenda a
+            on c.id_agendamento = a.fk_id_agendamento
+            inner join tb_usuarios u
+            on c.fk_id_usuario = u.id_usuario
+            WHERE id_usuario = 3
+
+select u.nome_usuario,c.statuscoleta,a.data_coleta, a.periodo,a.itemum,a.quantidadeum,a.itemdois,a.quantidadedois from tb_agendamentos c
+inner join tb_teste_agenda a
+on c.id_agendamento = a.fk_id_agendamento
+inner join tb_usuarios u
+on c.fk_id_usuario = u.id_usuario
+where id_usuario = 3
+
+
+
+----------------------------------------TABELAS ATUALIZADAS ----------------------------------
+CREATE TABLE public.tb_agendamentos
+(
+    id_agendamento integer NOT NULL DEFAULT nextval('tb_agendamentos_id_agendamento_seq'::regclass),
+    fk_id_usuario integer NOT NULL DEFAULT nextval('tb_agendamentos_fk_id_usuario_seq'::regclass),
+    statuscoleta character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT tb_agendamentos_pkey PRIMARY KEY (id_agendamento),
+    CONSTRAINT tb_agendamentos_fk_id_usuario_fkey FOREIGN KEY (fk_id_usuario)
+        REFERENCES public.tb_usuarios (id_usuario) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
+
+//NAO UTILIZADA
+CREATE TABLE public.tb_descartes
+(
+    id_descarte integer NOT NULL DEFAULT nextval('tb_descartes_id_descarte_seq'::regclass),
+    nome_descarte character varying(50) COLLATE pg_catalog."default",
+    quantidade integer,
+    CONSTRAINT tb_descartes_pkey PRIMARY KEY (id_descarte)
+)
+
+
+CREATE TABLE public.tb_enderecos
+(
+    id_endereco integer NOT NULL DEFAULT nextval('tb_enderecos_id_endereco_seq'::regclass),
+    fk_id_usuario integer NOT NULL DEFAULT nextval('tb_enderecos_fk_id_usuario_seq'::regclass),
+    rua character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    numero_casa integer NOT NULL,
+    bairro character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    cidade character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    estado character(2) COLLATE pg_catalog."default",
+    CONSTRAINT tb_enderecos_pkey PRIMARY KEY (id_endereco)
+)
+
+CREATE TABLE public.tb_telefones
+(
+    id_telefone integer NOT NULL DEFAULT nextval('tb_telefones_id_telefone_seq'::regclass),
+    ddd character(2) COLLATE pg_catalog."default" NOT NULL,
+    cpf character varying(15) COLLATE pg_catalog."default",
+    telefone integer NOT NULL,
+    fk_id_usuario integer NOT NULL DEFAULT nextval('tb_telefones_fk_id_usuario_seq'::regclass),
+    CONSTRAINT tb_telefones_pkey PRIMARY KEY (id_telefone),
+    CONSTRAINT tb_telefones_fk_id_usuario_fkey FOREIGN KEY (fk_id_usuario)
+        REFERENCES public.tb_usuarios (id_usuario) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+
+
+CREATE TABLE public.tb_teste_agenda
+(
+    id_agenda integer NOT NULL DEFAULT nextval('tb_teste_agenda_id_agenda_seq'::regclass),
+    data_coleta character varying(50) COLLATE pg_catalog."default",
+    periodo character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    itemum character varying(15) COLLATE pg_catalog."default",
+    quantidadeum integer NOT NULL,
+    itemdois character varying(15) COLLATE pg_catalog."default",
+    quantidadedois integer NOT NULL,
+    fk_id_usuario integer NOT NULL DEFAULT nextval('tb_teste_agenda_fk_id_usuario_seq'::regclass),
+    fk_id_agendamento integer NOT NULL DEFAULT nextval('tb_teste_agenda_fk_id_agendamento_seq'::regclass),
+    CONSTRAINT tb_teste_agenda_pkey PRIMARY KEY (id_agenda),
+    CONSTRAINT tb_teste_agenda_fk_id_agendamento_fkey FOREIGN KEY (fk_id_agendamento)
+        REFERENCES public.tb_agendamentos (id_agendamento) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT tb_teste_agenda_fk_id_usuario_fkey FOREIGN KEY (fk_id_usuario)
+        REFERENCES public.tb_usuarios (id_usuario) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+
+
+
+CREATE TABLE public.tb_usuarios
+(
+    id_usuario integer NOT NULL DEFAULT nextval('tb_usuarios_id_usuario_seq'::regclass),
+    cpf character varying(15) COLLATE pg_catalog."default",
+    nome_usuario character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    sobrenome_usuario character varying(40) COLLATE pg_catalog."default" NOT NULL,
+    sexo character(1) COLLATE pg_catalog."default" NOT NULL,
+    email character varying(40) COLLATE pg_catalog."default",
+    senha character varying(32) COLLATE pg_catalog."default",
+    tipo character(1) COLLATE pg_catalog."default",
+    CONSTRAINT tb_usuarios_pkey PRIMARY KEY (id_usuario)
+)
+
+
+
+

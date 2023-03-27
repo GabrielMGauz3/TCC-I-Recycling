@@ -1,0 +1,40 @@
+Usuarios criados:
+
+Gabriela Valcanaia
+CPF 774.835.510-03
+EMAIL gabriela@tads.com
+NUMERO 992633447
+SENHA 123
+
+Gabriel Gauze
+CPF 970.807.520-51
+EMAIL gabrielReiDelas@tads.com
+NUMERO 996824209
+SENHA 123 ALTERADA PARA 12345 APÓS CRIAÇÃO DA FUNÇÃO DE REDEFINIR SENHA
+
+Fulaninho
+CPF 573.863.530-22
+email fulano@teste.com
+Senha 123
+
+ADMIN ADMIN
+CPF 12345678999
+EMAIL ADMIN@ADMIN.com
+Senha 12345
+
+SEMPRE QUE FOR CRIAR UM USUARIO ADMIN NO BANCO, CRIAR USANDO O MD5
+EXEMPLO:
+
+INSERT INTO tb_usuarios (Nome_Usuario,Sobrenome_Usuario,CPF,Sexo,Email,Senha,Tipo) 
+VALUES ('XXXXX','XXXXX',###########,'X','EMAIL@EMAIL.com',MD5('SENHA'),'a')
+
+
+----------------------INSERÇÃO DE ADMIN---------------------- 
+INSERT INTO tb_usuarios (Nome_Usuario,Sobrenome_Usuario,CPF,Sexo,Email,Senha,Tipo) 
+VALUES ('ADMIN','ADMIN','11122233344','M','ADMIN@ADMIN.COM',MD5('12345'),'a');
+
+INSERT INTO tb_telefones (CPF,DDD,Telefone) VALUES ('11122233344','47',988774455);
+
+INSERT INTO tb_enderecos (Rua,Numero_Casa,Bairro,Cidade,Estado) VALUES ('teste',1000,'teste','jlle','SC');
+
+
